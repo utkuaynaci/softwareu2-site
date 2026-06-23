@@ -19,8 +19,21 @@
             overflow: hidden;
         }
 
+        /* Logo Alanı */
+        .logo-container {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .logo-container img {
+            max-width: 150px; /* Logonuzun ekrandaki genişliğini buradan ayarlayabilirsiniz */
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
         h1 {
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             margin-bottom: 10px;
             letter-spacing: 2px;
         }
@@ -28,7 +41,7 @@
         p {
             font-size: 1.1rem;
             color: #a0a0a0;
-            margin-bottom: 30px;
+            margin-bottom: 35px;
         }
 
         /* Dönme Animasyonu (Loader) */
@@ -36,8 +49,8 @@
             border: 4px solid #333;
             border-top: 4px solid #3498db;
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             animation: spin 1s linear infinite;
         }
 
@@ -49,8 +62,12 @@
 </head>
 <body>
 
+    <div class="logo-container">
+        <img src="logo.png" alt="Sitemizin Logosu">
+    </div>
+
     <div class="loader"></div>
-    <h1>...</h1>
+    <h1>Yapım Aşamasındayız</h1>
     <p>Çok yakında harika bir deneyimle buradayız.</p>
 
 </body>
