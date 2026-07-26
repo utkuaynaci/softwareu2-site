@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>U2 Software — Yazılım Stüdyosu</title>
 <meta name="description" content="U2 Software: web uygulamaları, otomasyon ve özel platform geliştirme.">
-<link rel="icon" type="image/png" href="assets/logo.png">
+<link rel="icon" type="image/png" href="logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -433,55 +433,6 @@
   }
   @media (max-width:600px){footer{flex-direction:column;gap:12px;text-align:center;}}
 
-  /* INTRO SPLASH */
-  #intro{
-    position:fixed;inset:0;z-index:2000;
-    background:#000;
-    display:flex;align-items:center;justify-content:center;
-    cursor:pointer;
-  }
-  #intro video{
-    max-width:min(90vw, 640px);
-    max-height:70vh;
-  }
-  #intro .skip{
-    position:absolute;bottom:34px;right:34px;
-    font-family:'JetBrains Mono', monospace;
-    font-size:0.72rem;
-    color:rgba(255,255,255,0.4);
-    letter-spacing:0.05em;
-  }
-  .shard{
-    position:absolute;
-    background:#000;
-    border-right:1px solid rgba(255,255,255,0.05);
-    border-bottom:1px solid rgba(255,255,255,0.05);
-    transition:transform 1s cubic-bezier(.4,0,.2,1), opacity 1s ease;
-    will-change:transform, opacity;
-  }
-  #intro.shatter video, #intro.shatter .skip{
-    opacity:0;
-    transition:opacity 0.3s ease;
-  }
-  #intro.shatter .shard{
-    opacity:0;
-  }
-  #intro.done{
-    display:none;
-  }
-  .flash{
-    position:fixed;inset:0;z-index:2001;
-    background:#fff;
-    opacity:0;
-    pointer-events:none;
-  }
-  .flash.hit{
-    opacity:0.15;
-    transition:opacity 0.4s ease;
-  }
-  @media (prefers-reduced-motion: reduce){
-    #intro{display:none;}
-  }
   @media (prefers-reduced-motion: reduce){
     *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important;}
   }
@@ -489,20 +440,11 @@
 </head>
 <body>
 
-<div class="flash" id="flash"></div>
-
-<div id="intro">
-  <video id="intro-video" autoplay muted playsinline>
-    <source src="logo2.mp4" type="video/mp4">
-  </video>
-  <div class="skip" data-i18n="intro.skip">DEVAM ETMEK İÇİN DOKUN</div>
-</div>
-
 <div id="progress"></div>
 <div class="grid-bg"></div>
 
 <nav id="nav">
-  <div class="logo"><img src="assets/logo.png" alt="U2 Software"></div>
+  <div class="logo"><img src="logo.png" alt="U2 Software"></div>
   <div class="nav-links">
     <a href="#about" data-i18n="nav.about">Hakkımızda</a>
     <a href="#services" data-i18n="nav.services">Hizmetler</a>
@@ -621,68 +563,13 @@
 
 <footer>
   <div style="display:flex;align-items:center;gap:10px;">
-    <img src="assets/logo.png" alt="U2 Software" style="height:18px;image-rendering:pixelated;opacity:0.7;">
+    <img src="logo.png" alt="U2 Software" style="height:18px;image-rendering:pixelated;opacity:0.7;">
     © 2026 U2 SOFTWARE
   </div>
   <div data-i18n="contact.location">Ankara, Türkiye</div>
 </footer>
 
 <script>
-  // intro splash: video -> glass shatter -> reveal site
-  (function(){
-    const intro = document.getElementById('intro');
-    const video = document.getElementById('intro-video');
-    const flash = document.getElementById('flash');
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if(reduceMotion){ intro.classList.add('done'); return; }
-
-    // build shard grid (irregular rows/cols for a more organic "glass" break)
-    const cols = 9, rows = 6;
-    const cellW = 100/cols, cellH = 100/rows;
-    for(let r=0;r<rows;r++){
-      for(let c=0;c<cols;c++){
-        const shard = document.createElement('div');
-        shard.className = 'shard';
-        const jitter = 1.4; // slight irregular size for organic crack look
-        shard.style.left = (c*cellW) + '%';
-        shard.style.top = (r*cellH) + '%';
-        shard.style.width = (cellW+jitter) + '%';
-        shard.style.height = (cellH+jitter) + '%';
-        // random fly-apart target + stagger
-        const tx = (Math.random()-0.5) * 1400;
-        const ty = (Math.random()-0.5) * 1000;
-        const rot = (Math.random()-0.5) * 140;
-        const delay = Math.random() * 160;
-        shard.style.transitionDelay = delay + 'ms';
-        shard.dataset.tx = tx;
-        shard.dataset.ty = ty;
-        shard.dataset.rot = rot;
-        intro.appendChild(shard);
-      }
-    }
-    const shards = intro.querySelectorAll('.shard');
-
-    let triggered = false;
-    function breakGlass(){
-      if(triggered) return;
-      triggered = true;
-      flash.classList.add('hit');
-      intro.classList.add('shatter');
-      shards.forEach(s => {
-        s.style.transform = `translate(${s.dataset.tx}px, ${s.dataset.ty}px) rotate(${s.dataset.rot}deg)`;
-      });
-      setTimeout(() => { intro.classList.add('done'); }, 1100);
-      setTimeout(() => { flash.classList.remove('hit'); }, 500);
-    }
-
-    video.addEventListener('ended', breakGlass);
-    // safety fallback in case autoplay/ended doesn't fire (e.g. blocked autoplay)
-    setTimeout(breakGlass, 6500);
-    // let people skip
-    intro.addEventListener('click', breakGlass);
-  })();
-
   // ---- i18n ----
   const translations = {
     tr: {
