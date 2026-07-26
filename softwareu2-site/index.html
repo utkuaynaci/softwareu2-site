@@ -150,7 +150,7 @@
   }
 
   /* HERO */
-  #hero{
+  #anasayfa{
     min-height:100vh;
     display:flex;flex-direction:column;justify-content:center;
     padding-top:170px;
@@ -279,13 +279,13 @@
   }
 
   /* ABOUT */
-  #about{
+  #hakkimizda{
     display:grid;
     grid-template-columns:1.1fr 0.9fr;
     gap:60px;
     align-items:center;
   }
-  @media (max-width:860px){#about{grid-template-columns:1fr;}}
+  @media (max-width:860px){#hakkimizda{grid-template-columns:1fr;}}
 
   .about-text p{color:var(--text-muted);margin-top:18px;font-size:1rem;}
   .about-text strong{color:var(--text);font-weight:500;}
@@ -360,7 +360,7 @@
   }
 
   /* CONTACT */
-  #contact{padding-bottom:80px;}
+  #iletisim{padding-bottom:80px;}
   .contact-wrap{
     background:var(--surface);
     border:1px solid var(--border);
@@ -448,11 +448,11 @@
 <div class="grid-bg"></div>
 
 <nav id="nav">
-  <a href="#hero" class="logo"><img src="logo.png" alt="U2 Software"></a>
+  <a href="#anasayfa" class="logo"><img src="logo.png" alt="U2 Software"></a>
   <div class="nav-links">
-    <a href="#about" data-i18n="nav.about">Hakkımızda</a>
-    <a href="#services" data-i18n="nav.services">Hizmetler</a>
-    <a href="#contact" data-i18n="nav.contact">İletişim</a>
+    <a href="#hakkimizda" data-i18n="nav.about">Hakkımızda</a>
+    <a href="#hizmetler" data-i18n="nav.services">Hizmetler</a>
+    <a href="#iletisim" data-i18n="nav.contact">İletişim</a>
   </div>
   <div class="nav-right">
     <div class="lang-switch">
@@ -460,11 +460,11 @@
       <button data-lang="en">EN</button>
       <button data-lang="zh">中文</button>
     </div>
-    <a href="#contact" class="nav-cta" data-i18n="nav.cta">Proje Konuşalım</a>
+    <a href="#iletisim" class="nav-cta" data-i18n="nav.cta">Proje Konuşalım</a>
   </div>
 </nav>
 
-<section id="hero">
+<section id="anasayfa">
   <div class="terminal">
     <span id="term-text"></span><span class="cursor"></span>
   </div>
@@ -473,14 +473,14 @@
   <h1 data-i18n="hero.title">Fikri koda,<br>kodu <span class="accent">çalışan sisteme</span> çeviririz.</h1>
   <p class="hero-sub" data-i18n="hero.sub">Web uygulamaları, otomasyon araçları ve ihtiyaca özel platformlar geliştiriyoruz. Küçük ekip, net iletişim, gerçekten çalışan yazılım.</p>
   <div class="hero-actions">
-    <a href="#contact" class="btn-primary" data-i18n="hero.ctaPrimary">Proje Konuşalım →</a>
-    <a href="#services" class="btn-ghost" data-i18n="hero.ctaGhost">Hizmetleri Gör</a>
+    <a href="#iletisim" class="btn-primary" data-i18n="hero.ctaPrimary">Proje Konuşalım →</a>
+    <a href="#hizmetler" class="btn-ghost" data-i18n="hero.ctaGhost">Hizmetleri Gör</a>
   </div>
 
   <div class="scroll-cue"><span class="line"></span> <span data-i18n="hero.scroll">AŞAĞI KAYDIR</span></div>
 </section>
 
-<section id="about">
+<section id="hakkimizda">
   <div class="about-text reveal">
     <div class="section-tag" data-i18n="about.tag">// HAKKIMIZDA</div>
     <h2 class="section-title" data-i18n="about.title">Kod yazan, ama önce problemi anlayan bir ekip.</h2>
@@ -503,7 +503,7 @@
   </div>
 </section>
 
-<section id="services">
+<section id="hizmetler">
   <div class="reveal">
     <div class="section-tag" data-i18n="services.tag">// HİZMETLER</div>
     <h2 class="section-title" data-i18n="services.title">Ne yaptığımız, kimin için yaptığımızdan bağımsız değil.</h2>
@@ -538,7 +538,7 @@
   </div>
 </section>
 
-<section id="contact">
+<section id="iletisim">
   <div class="contact-wrap reveal">
     <div class="contact-info">
       <h2 data-i18n="contact.title">Bir projen mi var?</h2>
