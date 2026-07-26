@@ -515,7 +515,7 @@
       <div class="service-tag">WEB</div>
       <h3 data-i18n="services.web.title">Web Uygulamaları</h3>
       <p data-i18n="services.web.desc">Uçtan uca web uygulamaları: kullanıcı arayüzünden veritabanı tasarımına, deploy sürecine kadar.</p>
-      <div class="service-stack">Flask · PHP · PostgreSQL · Render</div>
+      <div class="service-stack">Flask · PHP · MySQL / PostgreSQL · Render</div>
     </div>
     <div class="service-card">
       <div class="service-tag">AUTO</div>
@@ -533,7 +533,7 @@
       <div class="service-tag">CRM</div>
       <h3 data-i18n="services.crm.title">Müşteri Yönetim Sistemi</h3>
       <p data-i18n="services.crm.desc">Müşteri kayıtlarını, iletişim geçmişini ve süreçlerini tek panelden takip edebileceğin, ihtiyacına göre kurulan CRM çözümleri.</p>
-      <div class="service-stack">PHP / Flask · MySQL · <span data-i18n="services.crm.stackAuth">Yetkilendirme</span></div>
+      <div class="service-stack">PHP / Flask · MySQL / PostgreSQL · <span data-i18n="services.crm.stackAuth">Yetkilendirme</span></div>
     </div>
   </div>
 </section>
@@ -688,7 +688,10 @@
   }
 
   document.querySelectorAll('.lang-switch button').forEach(btn => {
-    btn.addEventListener('click', () => applyLang(btn.dataset.lang));
+    btn.addEventListener('click', () => {
+      applyLang(btn.dataset.lang);
+      if(typeof typeSequence === 'function') typeSequence();
+    });
   });
 
   applyLang(currentLang);
