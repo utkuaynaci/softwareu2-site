@@ -1,59 +1,877 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> U2 Software | IT Systems </title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #000000;
-            color: #000000;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>U2 Software — Yazılım Stüdyosu</title>
+<meta name="description" content="U2 Software: web uygulamaları, otomasyon ve özel platform geliştirme.">
+<link rel="icon" type="image/png" href="assets/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#000000;
+    --bg-alt:#0D0D10;
+    --surface:#131316;
+    --surface-2:#1A1A1E;
+    --border:#262629;
+    --text:#E4E6EC;
+    --text-muted:#8B8D96;
+    --accent:#57E8CE;
+    --accent-dim:rgba(87,232,206,0.13);
+    --warn:#F2A65A;
+    --font-display:'Space Grotesk', sans-serif;
+    --font-pixel:'Press Start 2P', monospace;
+    --font-body:'Inter', sans-serif;
+    --font-mono:'JetBrains Mono', monospace;
+  }
 
-        .logo-container {
-            margin-bottom: 20px;
-            text-align: center;
-        }
+  *{margin:0;padding:0;box-sizing:border-box;}
 
-        .logo-container video {
-            max-width: 90%; /* Burayı %90 yaptık, mobilde taşmaz */
-            max-width: 1000px; /* Logonun ekrandaki büyüklüğünü buradan değiştirebilirsin */
-            height: auto;
-            outline: none;
-        }
+  html{scroll-behavior:smooth;}
 
-        h1 {
-            font-size: 2.2rem;
-            margin-bottom: 10px;
-            letter-spacing: 2px;
-        }
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--font-body);
+    line-height:1.6;
+    overflow-x:hidden;
+  }
 
-        p {
-            font-size: 1.1rem;
-            color: #a0a0a0;
-        }
-    </style>
+  ::selection{background:var(--accent);color:var(--bg);}
+
+  a{color:inherit;text-decoration:none;}
+
+  .grid-bg{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size:64px 64px;
+    opacity:0.35;
+    mask-image:radial-gradient(ellipse 80% 60% at 50% 20%, black 40%, transparent 90%);
+  }
+
+  /* progress bar */
+  #progress{
+    position:fixed;top:0;left:0;height:2px;background:var(--accent);
+    width:0%;z-index:1000;transition:width 0.1s linear;
+    box-shadow:0 0 8px var(--accent);
+  }
+
+  /* nav */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:900;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:22px 6%;
+    background:rgba(11,15,20,0.75);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid transparent;
+    transition:border-color 0.3s ease, background 0.3s ease;
+  }
+  nav.scrolled{border-bottom-color:var(--border);}
+
+  .logo{
+    display:flex;align-items:center;
+  }
+  .logo img{
+    height:26px;
+    display:block;
+    image-rendering:pixelated;
+  }
+
+  .nav-links{
+    display:flex;gap:36px;
+    font-family:var(--font-pixel);
+    font-size:0.6rem;
+    color:var(--text-muted);
+  }
+  .nav-links a{
+    position:relative;
+    transition:color 0.25s ease;
+  }
+  .nav-links a::before{content:'· ';color:var(--accent);}
+  .nav-links a:hover{color:var(--text);}
+
+  .nav-cta{
+    font-family:var(--font-pixel);
+    font-size:0.6rem;
+    padding:11px 18px;
+    border:1px solid var(--accent);
+    color:var(--accent);
+    border-radius:3px;
+    transition:all 0.25s ease;
+  }
+  .nav-cta:hover{background:var(--accent);color:var(--bg);}
+
+  .lang-switch{
+    display:flex;gap:2px;
+    font-family:var(--font-pixel);
+    font-size:0.55rem;
+  }
+  .lang-switch button{
+    background:transparent;
+    border:1px solid var(--border);
+    color:var(--text-muted);
+    padding:7px 9px;
+    cursor:pointer;
+    transition:all 0.2s ease;
+  }
+  .lang-switch button:first-child{border-radius:3px 0 0 3px;}
+  .lang-switch button:last-child{border-radius:0 3px 3px 0;}
+  .lang-switch button.active{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:var(--bg);
+  }
+  .lang-switch button:hover:not(.active){color:var(--text);border-color:var(--text-muted);}
+
+  .nav-right{display:flex;align-items:center;gap:18px;}
+  @media (max-width:760px){
+    .nav-cta{display:none;}
+  }
+
+  @media (max-width:760px){
+    .nav-links{display:none;}
+  }
+
+  section{
+    position:relative;z-index:1;
+    padding:140px 6% 120px;
+    max-width:1180px;
+    margin:0 auto;
+  }
+
+  /* HERO */
+  #hero{
+    min-height:100vh;
+    display:flex;flex-direction:column;justify-content:center;
+    padding-top:100px;
+  }
+
+  .terminal{
+    font-family:var(--font-mono);
+    font-size:0.82rem;
+    color:var(--accent);
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:6px;
+    padding:16px 20px;
+    max-width:460px;
+    margin-bottom:44px;
+    min-height:104px;
+  }
+  .terminal .dim{color:var(--text-muted);}
+  .terminal .cursor{
+    display:inline-block;width:7px;height:1em;background:var(--accent);
+    vertical-align:text-bottom;animation:blink 1s step-end infinite;
+  }
+  @keyframes blink{50%{opacity:0;}}
+
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:0.78rem;
+    color:var(--text-muted);
+    letter-spacing:0.08em;
+    margin-bottom:20px;
+    opacity:0;
+    animation:fadeUp 0.7s ease forwards 0.1s;
+  }
+
+  h1{
+    font-family:var(--font-pixel);
+    font-weight:400;
+    font-size:clamp(1.5rem, 3.6vw, 2.7rem);
+    line-height:1.6;
+    letter-spacing:0;
+    max-width:900px;
+    opacity:0;
+    animation:fadeUp 0.8s ease forwards 0.25s;
+  }
+  h1 .accent{color:var(--accent);}
+
+  .hero-sub{
+    margin-top:26px;
+    max-width:560px;
+    font-size:1.05rem;
+    color:var(--text-muted);
+    opacity:0;
+    animation:fadeUp 0.8s ease forwards 0.45s;
+  }
+
+  .hero-actions{
+    margin-top:40px;
+    display:flex;gap:16px;align-items:center;
+    opacity:0;
+    animation:fadeUp 0.8s ease forwards 0.6s;
+  }
+
+  .btn-primary{
+    font-family:var(--font-mono);
+    font-size:0.85rem;
+    background:var(--accent);
+    color:var(--bg);
+    padding:13px 26px;
+    border-radius:4px;
+    font-weight:500;
+    transition:transform 0.2s ease, box-shadow 0.2s ease;
+    display:inline-block;
+  }
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px var(--accent-dim);}
+
+  .btn-ghost{
+    font-family:var(--font-mono);
+    font-size:0.85rem;
+    color:var(--text-muted);
+    padding:13px 6px;
+    border-bottom:1px solid var(--border);
+    transition:color 0.2s ease, border-color 0.2s ease;
+  }
+  .btn-ghost:hover{color:var(--text);border-color:var(--text-muted);}
+
+  @keyframes fadeUp{
+    from{opacity:0;transform:translateY(18px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+
+  .scroll-cue{
+    position:absolute;bottom:40px;left:6%;
+    font-family:var(--font-mono);
+    font-size:0.72rem;
+    color:var(--text-muted);
+    display:flex;align-items:center;gap:10px;
+  }
+  .scroll-cue .line{width:26px;height:1px;background:var(--text-muted);
+    animation:pulse 2s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:0.3;}50%{opacity:1;}}
+
+  /* reveal on scroll */
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity 0.7s ease, transform 0.7s ease;}
+  .reveal.in{opacity:1;transform:translateY(0);}
+
+  /* section headers */
+  .section-tag{
+    font-family:var(--font-pixel);
+    font-size:0.6rem;
+    color:var(--accent);
+    letter-spacing:0.08em;
+    margin-bottom:16px;
+  }
+  .section-title{
+    font-family:var(--font-pixel);
+    font-weight:400;
+    font-size:clamp(1rem, 1.8vw, 1.4rem);
+    line-height:1.8;
+    max-width:640px;
+    margin-bottom:20px;
+  }
+  .section-desc{
+    color:var(--text-muted);
+    max-width:600px;
+    font-size:1rem;
+  }
+
+  /* ABOUT */
+  #about{
+    display:grid;
+    grid-template-columns:1.1fr 0.9fr;
+    gap:60px;
+    align-items:center;
+  }
+  @media (max-width:860px){#about{grid-template-columns:1fr;}}
+
+  .about-text p{color:var(--text-muted);margin-top:18px;font-size:1rem;}
+  .about-text strong{color:var(--text);font-weight:500;}
+
+  .pipeline{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:32px 26px;
+  }
+  .pipeline-step{
+    display:flex;align-items:flex-start;gap:16px;
+    padding:14px 0;
+    position:relative;
+  }
+  .pipeline-step:not(:last-child)::after{
+    content:'';position:absolute;left:11px;top:34px;bottom:-4px;
+    width:1px;background:var(--border);
+  }
+  .pipeline-dot{
+    width:23px;height:23px;flex:none;
+    border-radius:50%;
+    border:1px solid var(--accent);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-mono);font-size:0.65rem;color:var(--accent);
+    background:var(--bg);
+  }
+  .pipeline-step h4{font-family:var(--font-display);font-size:1rem;font-weight:600;margin-bottom:3px;}
+  .pipeline-step p{color:var(--text-muted);font-size:0.88rem;}
+
+  /* SERVICES */
+  .services-grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:1px;
+    background:var(--border);
+    border:1px solid var(--border);
+    border-radius:10px;
+    overflow:hidden;
+    margin-top:52px;
+  }
+  @media (max-width:860px){.services-grid{grid-template-columns:1fr;}}
+
+  .service-card{
+    background:var(--bg-alt);
+    padding:36px 28px;
+    transition:background 0.3s ease;
+  }
+  .service-card:hover{background:var(--surface);}
+  .service-tag{
+    font-family:var(--font-mono);
+    font-size:0.72rem;
+    color:var(--accent);
+    border:1px solid var(--accent);
+    display:inline-block;
+    padding:3px 9px;
+    border-radius:3px;
+    margin-bottom:22px;
+  }
+  .service-card h3{
+    font-family:var(--font-display);
+    font-size:1.25rem;
+    font-weight:600;
+    margin-bottom:12px;
+  }
+  .service-card p{color:var(--text-muted);font-size:0.92rem;margin-bottom:18px;}
+  .service-stack{
+    font-family:var(--font-mono);
+    font-size:0.72rem;
+    color:var(--text-muted);
+    opacity:0.8;
+  }
+
+  /* CONTACT */
+  #contact{padding-bottom:80px;}
+  .contact-wrap{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:52px;
+    display:grid;
+    grid-template-columns:0.9fr 1.1fr;
+    gap:50px;
+  }
+  @media (max-width:860px){.contact-wrap{grid-template-columns:1fr;padding:32px 24px;}}
+
+  .contact-info h2{
+    font-family:var(--font-display);
+    font-size:clamp(1.6rem,3vw,2.2rem);
+    margin-bottom:16px;
+  }
+  .contact-info p{color:var(--text-muted);margin-bottom:26px;}
+  .contact-line{
+    font-family:var(--font-mono);
+    font-size:0.85rem;
+    color:var(--text-muted);
+    margin-bottom:10px;
+  }
+  .contact-line span{color:var(--text);}
+
+  form{display:flex;flex-direction:column;gap:16px;}
+  label{
+    font-family:var(--font-mono);
+    font-size:0.72rem;
+    color:var(--text-muted);
+    letter-spacing:0.05em;
+    margin-bottom:6px;
+    display:block;
+  }
+  input, textarea{
+    width:100%;
+    background:var(--bg);
+    border:1px solid var(--border);
+    border-radius:5px;
+    padding:12px 14px;
+    color:var(--text);
+    font-family:var(--font-body);
+    font-size:0.92rem;
+    transition:border-color 0.2s ease;
+  }
+  input:focus, textarea:focus{outline:none;border-color:var(--accent);}
+  textarea{resize:vertical;min-height:100px;}
+
+  .submit-btn{
+    font-family:var(--font-mono);
+    font-size:0.85rem;
+    background:var(--accent);
+    color:var(--bg);
+    padding:13px 26px;
+    border:none;
+    border-radius:4px;
+    font-weight:500;
+    cursor:pointer;
+    align-self:flex-start;
+    transition:transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px var(--accent-dim);}
+
+  .form-note{font-family:var(--font-mono);font-size:0.75rem;color:var(--text-muted);margin-top:4px;}
+
+  footer{
+    position:relative;z-index:1;
+    border-top:1px solid var(--border);
+    padding:32px 6%;
+    display:flex;justify-content:space-between;align-items:center;
+    font-family:var(--font-mono);
+    font-size:0.78rem;
+    color:var(--text-muted);
+  }
+  @media (max-width:600px){footer{flex-direction:column;gap:12px;text-align:center;}}
+
+  /* INTRO SPLASH */
+  #intro{
+    position:fixed;inset:0;z-index:2000;
+    background:#000;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+  }
+  #intro video{
+    max-width:min(90vw, 640px);
+    max-height:70vh;
+  }
+  #intro .skip{
+    position:absolute;bottom:34px;right:34px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.72rem;
+    color:rgba(255,255,255,0.4);
+    letter-spacing:0.05em;
+  }
+  .shard{
+    position:absolute;
+    background:#000;
+    border-right:1px solid rgba(255,255,255,0.05);
+    border-bottom:1px solid rgba(255,255,255,0.05);
+    transition:transform 1s cubic-bezier(.4,0,.2,1), opacity 1s ease;
+    will-change:transform, opacity;
+  }
+  #intro.shatter video, #intro.shatter .skip{
+    opacity:0;
+    transition:opacity 0.3s ease;
+  }
+  #intro.shatter .shard{
+    opacity:0;
+  }
+  #intro.done{
+    display:none;
+  }
+  .flash{
+    position:fixed;inset:0;z-index:2001;
+    background:#fff;
+    opacity:0;
+    pointer-events:none;
+  }
+  .flash.hit{
+    opacity:0.15;
+    transition:opacity 0.4s ease;
+  }
+  @media (prefers-reduced-motion: reduce){
+    #intro{display:none;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important;}
+  }
+</style>
 </head>
 <body>
 
-    <div class="logo-container">
-        <video autoplay loop muted playsinline>
-            <source src="logo2.mp4" type="video/mp4">
-            Tarayıcınız video etiketini desteklemiyor.
-        </video>
-    </div>
+<div class="flash" id="flash"></div>
 
-    <h1> </h1>
-    <p> </p>
+<div id="intro">
+  <video id="intro-video" autoplay muted playsinline>
+    <source src="logo2.mp4" type="video/mp4">
+  </video>
+  <div class="skip" data-i18n="intro.skip">DEVAM ETMEK İÇİN DOKUN</div>
+</div>
+
+<div id="progress"></div>
+<div class="grid-bg"></div>
+
+<nav id="nav">
+  <div class="logo"><img src="assets/logo.png" alt="U2 Software"></div>
+  <div class="nav-links">
+    <a href="#about" data-i18n="nav.about">Hakkımızda</a>
+    <a href="#services" data-i18n="nav.services">Hizmetler</a>
+    <a href="#contact" data-i18n="nav.contact">İletişim</a>
+  </div>
+  <div class="nav-right">
+    <div class="lang-switch">
+      <button data-lang="tr" class="active">TR</button>
+      <button data-lang="en">EN</button>
+      <button data-lang="zh">中文</button>
+    </div>
+    <a href="#contact" class="nav-cta" data-i18n="nav.cta">Proje Konuşalım</a>
+  </div>
+</nav>
+
+<section id="hero">
+  <div class="terminal">
+    <span id="term-text"></span><span class="cursor"></span>
+  </div>
+
+  <div class="eyebrow" data-i18n="hero.eyebrow">U2 SOFTWARE — YAZILIM STÜDYOSU</div>
+  <h1 data-i18n="hero.title">Fikri koda,<br>kodu <span class="accent">çalışan sisteme</span> çeviririz.</h1>
+  <p class="hero-sub" data-i18n="hero.sub">Web uygulamaları, otomasyon araçları ve ihtiyaca özel platformlar geliştiriyoruz. Küçük ekip, net iletişim, gerçekten çalışan yazılım.</p>
+  <div class="hero-actions">
+    <a href="#contact" class="btn-primary" data-i18n="hero.ctaPrimary">Proje Konuşalım →</a>
+    <a href="#services" class="btn-ghost" data-i18n="hero.ctaGhost">Hizmetleri Gör</a>
+  </div>
+
+  <div class="scroll-cue"><span class="line"></span> <span data-i18n="hero.scroll">AŞAĞI KAYDIR</span></div>
+</section>
+
+<section id="about">
+  <div class="about-text reveal">
+    <div class="section-tag" data-i18n="about.tag">// HAKKIMIZDA</div>
+    <h2 class="section-title" data-i18n="about.title">Kod yazan, ama önce problemi anlayan bir ekip.</h2>
+    <p data-i18n="about.p1">U2 Software, işi büyük vaatlerle değil <strong>çalışan yazılımla</strong> anlatmayı tercih eden küçük bir yazılım stüdyosu. Regülasyon takip sistemlerinden bilingual sınav platformlarına, iç süreçleri otomatikleştiren araçlardan web uygulamalarına kadar farklı ölçekte projeler kurduk.</p>
+    <p data-i18n="about.p2">Her projeye aynı şekilde yaklaşıyoruz: <strong>önce süreci anlamak, sonra en basit çözümü kurmak.</strong> Gereksiz karmaşıklık yok, sadece gerçekten kullanılan sistemler.</p>
+  </div>
+  <div class="pipeline reveal">
+    <div class="pipeline-step">
+      <div class="pipeline-dot">01</div>
+      <div><h4 data-i18n="about.step1.title">Anla</h4><p data-i18n="about.step1.desc">Süreci, veriyi ve gerçek ihtiyacı çıkarırız.</p></div>
+    </div>
+    <div class="pipeline-step">
+      <div class="pipeline-dot">02</div>
+      <div><h4 data-i18n="about.step2.title">Kur</h4><p data-i18n="about.step2.desc">Doğru araçlarla hızlı ve sağlam şekilde geliştiririz.</p></div>
+    </div>
+    <div class="pipeline-step">
+      <div class="pipeline-dot">03</div>
+      <div><h4 data-i18n="about.step3.title">Yayınla</h4><p data-i18n="about.step3.desc">Deploy eder, izler ve gerektikçe iyileştiririz.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="services">
+  <div class="reveal">
+    <div class="section-tag" data-i18n="services.tag">// HİZMETLER</div>
+    <h2 class="section-title" data-i18n="services.title">Ne yaptığımız, kimin için yaptığımızdan bağımsız değil.</h2>
+    <p class="section-desc" data-i18n="services.desc">Aşağıdaki üç alan, bugüne kadar en çok değer ürettiğimiz işler.</p>
+  </div>
+
+  <div class="services-grid reveal">
+    <div class="service-card">
+      <div class="service-tag">WEB</div>
+      <h3 data-i18n="services.web.title">Web Uygulamaları</h3>
+      <p data-i18n="services.web.desc">Uçtan uca web uygulamaları: kullanıcı arayüzünden veritabanı tasarımına, deploy sürecine kadar.</p>
+      <div class="service-stack">Flask · PHP · PostgreSQL · Render</div>
+    </div>
+    <div class="service-card">
+      <div class="service-tag">AUTO</div>
+      <h3 data-i18n="services.auto.title">Otomasyon &amp; Entegrasyon</h3>
+      <p data-i18n="services.auto.desc">Elle yapılan tekrarlayan işleri otomatikleştiren araçlar; API entegrasyonları ve veri kontrol sistemleri.</p>
+      <div class="service-stack">Python · REST API · Cron Jobs</div>
+    </div>
+    <div class="service-card">
+      <div class="service-tag">SYS</div>
+      <h3 data-i18n="services.sys.title">Özel Platformlar</h3>
+      <p data-i18n="services.sys.desc">Sınav sistemleri, admin panelleri ve takip araçları gibi ihtiyaca özel geliştirilen platformlar.</p>
+      <div class="service-stack" data-i18n="services.sys.stack">PHP Admin · MySQL · Çok Dilli Yapı</div>
+    </div>
+    <div class="service-card">
+      <div class="service-tag">CRM</div>
+      <h3 data-i18n="services.crm.title">Müşteri Yönetim Sistemi</h3>
+      <p data-i18n="services.crm.desc">Müşteri kayıtlarını, iletişim geçmişini ve süreçlerini tek panelden takip edebileceğin, ihtiyacına göre kurulan CRM çözümleri.</p>
+      <div class="service-stack">PHP / Flask · MySQL · <span data-i18n="services.crm.stackAuth">Yetkilendirme</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="contact-wrap reveal">
+    <div class="contact-info">
+      <h2 data-i18n="contact.title">Bir projen mi var?</h2>
+      <p data-i18n="contact.desc">Kısaca anlat, birlikte en basit çözümü bulalım. Genelde 1 iş günü içinde dönüş yapıyoruz.</p>
+      <div class="contact-line"><span data-i18n="contact.emailLabel">E-POSTA</span> <span>info@softwareu2.com</span></div>
+      <div class="contact-line"><span data-i18n="contact.locationLabel">KONUM</span> <span data-i18n="contact.location">Ankara, Türkiye</span></div>
+    </div>
+    <form id="contact-form">
+      <div>
+        <label for="name" data-i18n="contact.form.name">İSİM</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+      <div>
+        <label for="email" data-i18n="contact.form.email">E-POSTA</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      <div>
+        <label for="message" data-i18n="contact.form.message">MESAJ</label>
+        <textarea id="message" name="message" required></textarea>
+      </div>
+      <button type="submit" class="submit-btn" data-i18n="contact.form.submit">Gönder →</button>
+      <div class="form-note" id="form-status"></div>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <img src="assets/logo.png" alt="U2 Software" style="height:18px;image-rendering:pixelated;opacity:0.7;">
+    © 2026 U2 SOFTWARE
+  </div>
+  <div data-i18n="contact.location">Ankara, Türkiye</div>
+</footer>
+
+<script>
+  // intro splash: video -> glass shatter -> reveal site
+  (function(){
+    const intro = document.getElementById('intro');
+    const video = document.getElementById('intro-video');
+    const flash = document.getElementById('flash');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if(reduceMotion){ intro.classList.add('done'); return; }
+
+    // build shard grid (irregular rows/cols for a more organic "glass" break)
+    const cols = 9, rows = 6;
+    const cellW = 100/cols, cellH = 100/rows;
+    for(let r=0;r<rows;r++){
+      for(let c=0;c<cols;c++){
+        const shard = document.createElement('div');
+        shard.className = 'shard';
+        const jitter = 1.4; // slight irregular size for organic crack look
+        shard.style.left = (c*cellW) + '%';
+        shard.style.top = (r*cellH) + '%';
+        shard.style.width = (cellW+jitter) + '%';
+        shard.style.height = (cellH+jitter) + '%';
+        // random fly-apart target + stagger
+        const tx = (Math.random()-0.5) * 1400;
+        const ty = (Math.random()-0.5) * 1000;
+        const rot = (Math.random()-0.5) * 140;
+        const delay = Math.random() * 160;
+        shard.style.transitionDelay = delay + 'ms';
+        shard.dataset.tx = tx;
+        shard.dataset.ty = ty;
+        shard.dataset.rot = rot;
+        intro.appendChild(shard);
+      }
+    }
+    const shards = intro.querySelectorAll('.shard');
+
+    let triggered = false;
+    function breakGlass(){
+      if(triggered) return;
+      triggered = true;
+      flash.classList.add('hit');
+      intro.classList.add('shatter');
+      shards.forEach(s => {
+        s.style.transform = `translate(${s.dataset.tx}px, ${s.dataset.ty}px) rotate(${s.dataset.rot}deg)`;
+      });
+      setTimeout(() => { intro.classList.add('done'); }, 1100);
+      setTimeout(() => { flash.classList.remove('hit'); }, 500);
+    }
+
+    video.addEventListener('ended', breakGlass);
+    // safety fallback in case autoplay/ended doesn't fire (e.g. blocked autoplay)
+    setTimeout(breakGlass, 6500);
+    // let people skip
+    intro.addEventListener('click', breakGlass);
+  })();
+
+  // ---- i18n ----
+  const translations = {
+    tr: {
+      "nav.about":"Hakkımızda","nav.services":"Hizmetler","nav.contact":"İletişim","nav.cta":"Proje Konuşalım",
+      "intro.skip":"DEVAM ETMEK İÇİN DOKUN",
+      "hero.eyebrow":"U2 SOFTWARE — YAZILIM STÜDYOSU",
+      "hero.title":"Fikri koda,<br>kodu <span class=\"accent\">çalışan sisteme</span> çeviririz.",
+      "hero.sub":"Web uygulamaları, otomasyon araçları ve ihtiyaca özel platformlar geliştiriyoruz. Küçük ekip, net iletişim, gerçekten çalışan yazılım.",
+      "hero.ctaPrimary":"Proje Konuşalım →","hero.ctaGhost":"Hizmetleri Gör","hero.scroll":"AŞAĞI KAYDIR",
+      "about.tag":"// HAKKIMIZDA","about.title":"Kod yazan, ama önce problemi anlayan bir ekip.",
+      "about.p1":"U2 Software, işi büyük vaatlerle değil <strong>çalışan yazılımla</strong> anlatmayı tercih eden küçük bir yazılım stüdyosu. Regülasyon takip sistemlerinden bilingual sınav platformlarına, iç süreçleri otomatikleştiren araçlardan web uygulamalarına kadar farklı ölçekte projeler kurduk.",
+      "about.p2":"Her projeye aynı şekilde yaklaşıyoruz: <strong>önce süreci anlamak, sonra en basit çözümü kurmak.</strong> Gereksiz karmaşıklık yok, sadece gerçekten kullanılan sistemler.",
+      "about.step1.title":"Anla","about.step1.desc":"Süreci, veriyi ve gerçek ihtiyacı çıkarırız.",
+      "about.step2.title":"Kur","about.step2.desc":"Doğru araçlarla hızlı ve sağlam şekilde geliştiririz.",
+      "about.step3.title":"Yayınla","about.step3.desc":"Deploy eder, izler ve gerektikçe iyileştiririz.",
+      "services.tag":"// HİZMETLER","services.title":"Ne yaptığımız, kimin için yaptığımızdan bağımsız değil.",
+      "services.desc":"Aşağıdaki üç alan, bugüne kadar en çok değer ürettiğimiz işler.",
+      "services.web.title":"Web Uygulamaları","services.web.desc":"Uçtan uca web uygulamaları: kullanıcı arayüzünden veritabanı tasarımına, deploy sürecine kadar.",
+      "services.auto.title":"Otomasyon &amp; Entegrasyon","services.auto.desc":"Elle yapılan tekrarlayan işleri otomatikleştiren araçlar; API entegrasyonları ve veri kontrol sistemleri.",
+      "services.sys.title":"Özel Platformlar","services.sys.desc":"Sınav sistemleri, admin panelleri ve takip araçları gibi ihtiyaca özel geliştirilen platformlar.",
+      "services.sys.stack":"PHP Admin · MySQL · Çok Dilli Yapı",
+      "services.crm.title":"Müşteri Yönetim Sistemi","services.crm.desc":"Müşteri kayıtlarını, iletişim geçmişini ve süreçlerini tek panelden takip edebileceğin, ihtiyacına göre kurulan CRM çözümleri.",
+      "services.crm.stackAuth":"Yetkilendirme",
+      "contact.title":"Bir projen mi var?","contact.desc":"Kısaca anlat, birlikte en basit çözümü bulalım. Genelde 1 iş günü içinde dönüş yapıyoruz.",
+      "contact.emailLabel":"E-POSTA","contact.locationLabel":"KONUM","contact.location":"Ankara, Türkiye",
+      "contact.form.name":"İSİM","contact.form.email":"E-POSTA","contact.form.message":"MESAJ","contact.form.submit":"Gönder →",
+      "contact.form.statusSent":"Mail programın açılıyor — mesajı orada gönder butonuna basarak tamamla.",
+      "contact.form.mailIsim":"İsim","contact.form.mailEposta":"E-posta","contact.form.mailMesaj":"Mesaj",
+      "terminal.line1":"$ u2software init","terminal.line2":"proje analiz ediliyor...","terminal.line3":"sistem hazır ✓",
+      "meta.title":"U2 Software — Yazılım Stüdyosu","meta.desc":"U2 Software: web uygulamaları, otomasyon ve özel platform geliştirme."
+    },
+    en: {
+      "nav.about":"About","nav.services":"Services","nav.contact":"Contact","nav.cta":"Let's Talk",
+      "intro.skip":"TAP TO CONTINUE",
+      "hero.eyebrow":"U2 SOFTWARE — SOFTWARE STUDIO",
+      "hero.title":"We turn ideas into code,<br>and code into <span class=\"accent\">working systems</span>.",
+      "hero.sub":"We build web applications, automation tools and custom platforms. Small team, clear communication, software that actually works.",
+      "hero.ctaPrimary":"Let's Talk →","hero.ctaGhost":"See Services","hero.scroll":"SCROLL DOWN",
+      "about.tag":"// ABOUT","about.title":"A team that writes code — but understands the problem first.",
+      "about.p1":"U2 Software is a small software studio that prefers <strong>working software</strong> over big promises. We've built everything from regulation-tracking systems and bilingual exam platforms to internal automation tools and web applications, at every scale.",
+      "about.p2":"We approach every project the same way: <strong>understand the process first, then build the simplest solution.</strong> No unnecessary complexity — just systems people actually use.",
+      "about.step1.title":"Understand","about.step1.desc":"We map out the process, the data, and the real need.",
+      "about.step2.title":"Build","about.step2.desc":"We develop quickly and solidly with the right tools.",
+      "about.step3.title":"Ship","about.step3.desc":"We deploy, monitor, and improve as needed.",
+      "services.tag":"// SERVICES","services.title":"What we do isn't separate from who we do it for.",
+      "services.desc":"The three areas below are where we've delivered the most value so far.",
+      "services.web.title":"Web Applications","services.web.desc":"End-to-end web applications: from user interface to database design to deployment.",
+      "services.auto.title":"Automation &amp; Integration","services.auto.desc":"Tools that automate repetitive manual work; API integrations and data-checking systems.",
+      "services.sys.title":"Custom Platforms","services.sys.desc":"Purpose-built platforms like exam systems, admin panels, and tracking tools.",
+      "services.sys.stack":"PHP Admin · MySQL · Multilingual",
+      "services.crm.title":"Customer Management System","services.crm.desc":"A CRM built to your needs — track customer records, communication history, and processes from one panel.",
+      "services.crm.stackAuth":"Access Control",
+      "contact.title":"Got a project?","contact.desc":"Tell us briefly and we'll find the simplest solution together. We usually reply within 1 business day.",
+      "contact.emailLabel":"EMAIL","contact.locationLabel":"LOCATION","contact.location":"Ankara, Turkey",
+      "contact.form.name":"NAME","contact.form.email":"EMAIL","contact.form.message":"MESSAGE","contact.form.submit":"Send →",
+      "contact.form.statusSent":"Opening your mail app — hit send there to finish.",
+      "contact.form.mailIsim":"Name","contact.form.mailEposta":"Email","contact.form.mailMesaj":"Message",
+      "terminal.line1":"$ u2software init","terminal.line2":"analyzing project...","terminal.line3":"system ready ✓",
+      "meta.title":"U2 Software — Software Studio","meta.desc":"U2 Software: web applications, automation and custom platform development."
+    },
+    zh: {
+      "nav.about":"关于我们","nav.services":"服务","nav.contact":"联系","nav.cta":"洽谈项目",
+      "intro.skip":"点击继续",
+      "hero.eyebrow":"U2 SOFTWARE — 软件工作室",
+      "hero.title":"我们把想法变成代码，<br>把代码变成<span class=\"accent\">可运行的系统</span>。",
+      "hero.sub":"我们开发网页应用、自动化工具和定制平台。小团队，沟通直接，软件真正好用。",
+      "hero.ctaPrimary":"洽谈项目 →","hero.ctaGhost":"查看服务","hero.scroll":"向下滚动",
+      "about.tag":"// 关于我们","about.title":"既会写代码，也先理解问题的团队。",
+      "about.p1":"U2 Software 是一家小型软件工作室，相比空口承诺，我们更看重<strong>真正好用的软件</strong>。从法规追踪系统、双语考试平台，到内部自动化工具和网页应用，我们做过不同规模的项目。",
+      "about.p2":"我们对待每个项目的方式都一样：<strong>先理解流程，再搭建最简单的方案。</strong>没有多余的复杂度，只有真正会被使用的系统。",
+      "about.step1.title":"理解","about.step1.desc":"梳理流程、数据和真实需求。",
+      "about.step2.title":"搭建","about.step2.desc":"用合适的工具快速、稳健地开发。",
+      "about.step3.title":"上线","about.step3.desc":"部署、监控，并按需持续改进。",
+      "services.tag":"// 服务","services.title":"我们做什么，取决于我们为谁而做。",
+      "services.desc":"以下三个领域是我们迄今创造最多价值的工作。",
+      "services.web.title":"网页应用","services.web.desc":"端到端网页应用开发：从用户界面到数据库设计，再到部署上线。",
+      "services.auto.title":"自动化与集成","services.auto.desc":"将重复性人工工作自动化的工具；API 集成与数据核对系统。",
+      "services.sys.title":"定制平台","services.sys.desc":"考试系统、管理后台、追踪工具等按需定制开发的平台。",
+      "services.sys.stack":"PHP 后台 · MySQL · 多语言支持",
+      "services.crm.title":"客户管理系统","services.crm.desc":"按你的需求搭建的 CRM——在一个面板中追踪客户记录、沟通历史和流程。",
+      "services.crm.stackAuth":"权限管理",
+      "contact.title":"有项目想聊聊？","contact.desc":"简单告诉我们，一起找到最简单的方案。我们通常在 1 个工作日内回复。",
+      "contact.emailLabel":"邮箱","contact.locationLabel":"位置","contact.location":"土耳其 安卡拉",
+      "contact.form.name":"姓名","contact.form.email":"邮箱","contact.form.message":"留言","contact.form.submit":"发送 →",
+      "contact.form.statusSent":"正在打开邮件应用——请在那里点击发送完成。",
+      "contact.form.mailIsim":"姓名","contact.form.mailEposta":"邮箱","contact.form.mailMesaj":"留言",
+      "terminal.line1":"$ u2software init","terminal.line2":"正在分析项目...","terminal.line3":"系统就绪 ✓",
+      "meta.title":"U2 Software — 软件工作室","meta.desc":"U2 Software：网页应用、自动化与定制平台开发。"
+    }
+  };
+
+  let currentLang = localStorage.getItem('u2lang') || 'tr';
+
+  function applyLang(lang){
+    currentLang = lang;
+    localStorage.setItem('u2lang', lang);
+    document.documentElement.lang = lang;
+    document.title = translations[lang]["meta.title"];
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if(metaDesc) metaDesc.setAttribute('content', translations[lang]["meta.desc"]);
+
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if(translations[lang][key] !== undefined){
+        el.innerHTML = translations[lang][key];
+      }
+    });
+
+    document.querySelectorAll('.lang-switch button').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+  }
+
+  document.querySelectorAll('.lang-switch button').forEach(btn => {
+    btn.addEventListener('click', () => applyLang(btn.dataset.lang));
+  });
+
+  applyLang(currentLang);
+
+  const progress = document.getElementById('progress');
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    progress.style.width = scrolled + '%';
+    nav.classList.toggle('scrolled', h.scrollTop > 20);
+  });
+
+  // reveal on scroll
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, {threshold:0.15});
+  revealEls.forEach(el => io.observe(el));
+
+  // terminal typing effect
+  const termText = document.getElementById('term-text');
+  const reduceMotion2 = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function getTerminalLines(){
+    const t = translations[currentLang];
+    return [
+      { t: t["terminal.line1"], c: '#57E8CE' },
+      { t: t["terminal.line2"], c: '#8B8D96' },
+      { t: t["terminal.line3"], c: '#57E8CE' }
+    ];
+  }
+
+  async function typeSequence(){
+    const lines = getTerminalLines();
+    if(reduceMotion2){
+      termText.innerHTML = lines.map(l => `<span style="color:${l.c}">${l.t}</span>`).join('<br>');
+      return;
+    }
+    let html = '';
+    for(let i=0;i<lines.length;i++){
+      const {t,c} = lines[i];
+      let current = '';
+      for(const ch of t){
+        current += ch;
+        termText.innerHTML = html + `<span style="color:${c}">${current}</span>`;
+        await new Promise(r => setTimeout(r, 22));
+      }
+      html += `<span style="color:${c}">${t}</span><br>`;
+      await new Promise(r => setTimeout(r, 260));
+    }
+  }
+  typeSequence();
+
+  // contact form -> mailto
+  const form = document.getElementById('contact-form');
+  const status = document.getElementById('form-status');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const t = translations[currentLang];
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const message = document.getElementById('message').value.trim();
+
+    const subject = encodeURIComponent(`Website — ${name}`);
+    const body = encodeURIComponent(`${t["contact.form.mailIsim"]}: ${name}\n${t["contact.form.mailEposta"]}: ${email}\n\n${t["contact.form.mailMesaj"]}:\n${message}`);
+    const mailtoLink = `mailto:info@softwareu2.com?subject=${subject}&body=${body}`;
+
+    window.location.href = mailtoLink;
+    status.textContent = t["contact.form.statusSent"];
+  });
+</script>
 
 </body>
 </html>
