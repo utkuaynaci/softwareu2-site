@@ -150,7 +150,7 @@
   }
 
   /* HERO */
-  #anasayfa{
+  [data-section="hero"]{
     min-height:100vh;
     display:flex;flex-direction:column;justify-content:center;
     padding-top:145px;
@@ -279,13 +279,13 @@
   }
 
   /* ABOUT */
-  #hakkimizda{
+  [data-section="about"]{
     display:grid;
     grid-template-columns:1.1fr 0.9fr;
     gap:60px;
     align-items:center;
   }
-  @media (max-width:860px){#hakkimizda{grid-template-columns:1fr;}}
+  @media (max-width:860px){[data-section="about"]{grid-template-columns:1fr;}}
 
   .about-text p{color:var(--text-muted);margin-top:18px;font-size:1rem;}
   .about-text strong{color:var(--text);font-weight:500;}
@@ -360,7 +360,7 @@
   }
 
   /* CONTACT */
-  #iletisim{padding-bottom:80px;}
+  [data-section="contact"]{padding-bottom:80px;}
   .contact-wrap{
     background:var(--surface);
     border:1px solid var(--border);
@@ -448,11 +448,11 @@
 <div class="grid-bg"></div>
 
 <nav id="nav">
-  <a href="#anasayfa" class="logo"><img src="logo.png" alt="U2 Software"></a>
+  <a href="#anasayfa" data-target="hero" class="logo"><img src="logo.png" alt="U2 Software"></a>
   <div class="nav-links">
-    <a href="#hakkimizda" data-i18n="nav.about">Hakkımızda</a>
-    <a href="#hizmetler" data-i18n="nav.services">Hizmetler</a>
-    <a href="#iletisim" data-i18n="nav.contact">İletişim</a>
+    <a href="#hakkimizda" data-target="about" data-i18n="nav.about">Hakkımızda</a>
+    <a href="#hizmetler" data-target="services" data-i18n="nav.services">Hizmetler</a>
+    <a href="#iletisim" data-target="contact" data-i18n="nav.contact">İletişim</a>
   </div>
   <div class="nav-right">
     <div class="lang-switch">
@@ -460,11 +460,11 @@
       <button data-lang="en">EN</button>
       <button data-lang="zh">中文</button>
     </div>
-    <a href="#iletisim" class="nav-cta" data-i18n="nav.cta">Proje Konuşalım</a>
+    <a href="#iletisim" data-target="contact" class="nav-cta" data-i18n="nav.cta">Proje Konuşalım</a>
   </div>
 </nav>
 
-<section id="anasayfa">
+<section id="anasayfa" data-section="hero">
   <div class="terminal">
     <span id="term-text"></span><span class="cursor"></span>
   </div>
@@ -473,14 +473,14 @@
   <h1 data-i18n="hero.title">Fikri koda,<br>kodu <span class="accent">çalışan sisteme</span> çeviririz.</h1>
   <p class="hero-sub" data-i18n="hero.sub">Web uygulamaları, otomasyon araçları ve ihtiyaca özel platformlar geliştiriyoruz. Küçük ekip, net iletişim, gerçekten çalışan yazılım.</p>
   <div class="hero-actions">
-    <a href="#iletisim" class="btn-primary" data-i18n="hero.ctaPrimary">Proje Konuşalım →</a>
-    <a href="#hizmetler" class="btn-ghost" data-i18n="hero.ctaGhost">Hizmetleri Gör</a>
+    <a href="#iletisim" data-target="contact" class="btn-primary" data-i18n="hero.ctaPrimary">Proje Konuşalım →</a>
+    <a href="#hizmetler" data-target="services" class="btn-ghost" data-i18n="hero.ctaGhost">Hizmetleri Gör</a>
   </div>
 
   <div class="scroll-cue"><span class="line"></span> <span data-i18n="hero.scroll">AŞAĞI KAYDIR</span></div>
 </section>
 
-<section id="hakkimizda">
+<section id="hakkimizda" data-section="about">
   <div class="about-text reveal">
     <div class="section-tag" data-i18n="about.tag">// HAKKIMIZDA</div>
     <h2 class="section-title" data-i18n="about.title">Kod yazan, ama önce problemi anlayan bir ekip.</h2>
@@ -503,7 +503,7 @@
   </div>
 </section>
 
-<section id="hizmetler">
+<section id="hizmetler" data-section="services">
   <div class="reveal">
     <div class="section-tag" data-i18n="services.tag">// HİZMETLER</div>
     <h2 class="section-title" data-i18n="services.title">Ne yaptığımız, kimin için yaptığımızdan bağımsız değil.</h2>
@@ -538,7 +538,7 @@
   </div>
 </section>
 
-<section id="iletisim">
+<section id="iletisim" data-section="contact">
   <div class="contact-wrap reveal">
     <div class="contact-info">
       <h2 data-i18n="contact.title">Bir projen mi var?</h2>
@@ -665,6 +665,12 @@
     }
   };
 
+  const slugs = {
+    tr: { hero:'anasayfa', about:'hakkimizda', services:'hizmetler', contact:'iletisim' },
+    en: { hero:'home', about:'about', services:'services', contact:'contact' },
+    zh: { hero:'shouye', about:'guanyu', services:'fuwu', contact:'lianxi' }
+  };
+
   let currentLang = localStorage.getItem('u2lang') || 'tr';
 
   function applyLang(lang){
@@ -684,6 +690,16 @@
 
     document.querySelectorAll('.lang-switch button').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+
+    // update section ids and link hrefs to match the selected language
+    document.querySelectorAll('[data-section]').forEach(sec => {
+      const key = sec.getAttribute('data-section');
+      if(slugs[lang][key]) sec.id = slugs[lang][key];
+    });
+    document.querySelectorAll('[data-target]').forEach(link => {
+      const key = link.getAttribute('data-target');
+      if(slugs[lang][key]) link.setAttribute('href', '#' + slugs[lang][key]);
     });
   }
 
